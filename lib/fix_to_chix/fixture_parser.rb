@@ -33,11 +33,12 @@ module FixToChix
     def define_factories
       factory_definition = []
       @factory_names.each do |name|
-        factory_definition << "Factory.define :#{self.factory_name(name)}, :class => #{model_name.camelize} do |#{model_name[0].chr}|"
+        factory_definition << "FactoryBot.define do" 
+        factory_definition << "  factory :#{self.factory_name(name)}, :class => #{model_name.camelize} do |#{model_name[0].chr}|"
         define_attributes_for(name).each do |attrib|
           factory_definition << attrib
         end
-        factory_definition << "end"
+        factory_definition << "  end\nend"
         factory_definition << ""
       end
       factory_definition
@@ -50,13 +51,27 @@ module FixToChix
 
     def write_factory_attribute(name, attribute)
       attr_value = @current_fixture[name][attribute]
-p attr_value.class
-p attr_value
-      if attr_value.respond_to?(:to_i) 
-      attr_value = attr_value.to_i == 0 ? "'#{attr_value}'" : "#{attr_value}"
-      end 
-      "  #{model_name[0].chr}.#{attribute} #{attr_value}"
+      "  #{model_name[0].chr}.#{attribute} { #{type_to_literal(attr_value)} }"
     end
+
+    def type_to_literal(value)
+     case value
+      when String
+        "\"#{value}\""
+      when NilClass
+        "nil"
+      when FalseClass, TrueClass
+        "#{value}"
+      when BigDecimal
+         "BigDecimal.new(\"#{value}\")"
+      when Numeric
+	"#{value}"
+      when Time
+        "DateTime.parse(\"#{value}\")"
+      else
+	raise "#{value.class} : #{value} needs literal conversion"
+     end
+    end	
 
     def factory_name(node_name)
       DEFAULT_NAMES.include?(node_name) ? "#{self.model_name}_#{node_name}" : node_name
