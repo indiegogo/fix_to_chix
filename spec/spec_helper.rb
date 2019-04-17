@@ -9,4 +9,4 @@ end
 $:.unshift(File.dirname(__FILE__) + '/../lib')
 require 'fix_to_chix'
 require 'rubygems'
-require 'activesupport'
+require 'active_support'

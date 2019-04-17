@@ -1,3 +1,4 @@
+require 'yaml'
 class FileNotFoundError < IOError; end;
 
 module FixToChix
@@ -49,7 +50,11 @@ module FixToChix
 
     def write_factory_attribute(name, attribute)
       attr_value = @current_fixture[name][attribute]
+p attr_value.class
+p attr_value
+      if attr_value.respond_to?(:to_i) 
       attr_value = attr_value.to_i == 0 ? "'#{attr_value}'" : "#{attr_value}"
+      end 
       "  #{model_name[0].chr}.#{attribute} #{attr_value}"
     end
 

@@ -2,7 +2,7 @@ $:.unshift(File.dirname(__FILE__)) unless
 $:.include?(File.dirname(__FILE__)) || $:.include?(File.expand_path(File.dirname(__FILE__)))
 
 require 'rubygems'
-require 'activesupport'
+require 'active_support/all'
 require 'fix_to_chix/controller'
 require 'optparse'
 
@@ -10,7 +10,7 @@ module FixToChix
 
   VERSION = '0.0.5'
 
-  APP_ROOT = "." # need to call fixtochix command from your app base
+  APP_ROOT = "../monorail" # need to call fixtochix command from your app base
 
   TEST_FIXTURES = "#{APP_ROOT}/test/fixtures/*"
   SPEC_FIXTURES = "#{APP_ROOT}/spec/fixtures/*"
